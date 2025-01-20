@@ -5,15 +5,12 @@
 #include <iostream>
 #include "DS_timer.h"
 
-#define NUM_DATA 1024
+#define NUM_DATA 1030
 
-__global__ void vectorAdd(int *da, int *db, int *dc, int numElements)
+__global__ void vectorAdd(int *da, int *db, int *dc)
 {
     int i = threadIdx.x;
-    if (i < numElements)
-    {
-        dc[i] = da[i] + db[i];
-    }
+    dc[i] = da[i] + db[i];
 }
 
 int main()
@@ -30,6 +27,7 @@ int main()
     int memSize = NUM_DATA * sizeof(int);
 
     printf("%d elements, memSize = %d bytes\n", NUM_DATA, memSize);
+    printf("ceiling NUMDATA: %lf\n", ceil(NUM_DATA / 1024));
 
     a = new int[NUM_DATA];
     memset(a, 0, memSize);
@@ -65,7 +63,7 @@ int main()
     timer.offTimer(2);
 
     timer.onTimer(1);
-    vectorAdd<<<1, NUM_DATA>>>(da, db, dc, NUM_DATA);
+    vectorAdd<<<ceil(NUM_DATA / 1024), 1024>>>(da, db, dc);
     cudaDeviceSynchronize();
     timer.offTimer(1);
 
@@ -88,7 +86,6 @@ int main()
         {
             printf("Error: c[%d] = %d, hc[%d] = %d\n", i, c[i], i, hc[i]);
             result = false;
-            break;
         }
     }
 
