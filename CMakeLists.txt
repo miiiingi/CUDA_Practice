@@ -24,8 +24,15 @@ link_directories(
 )
 
 # demo 실행 파일 (CUDA 파일 컴파일)
-# vectorSummation 실행 파일 (CUDA 파일 컴파일)
 add_executable(vectorSummation vectorSummation.cu DS_Timer/DS_timer.cpp)
+set_target_properties(vectorSummation PROPERTIES CUDA_SEPARABLE_COMPILATION ON)  # CUDA 분리 컴파일 활성화
+
+target_link_libraries(vectorSummation 
+    ${CUDA_LIBRARIES} 
+    cudart 
+)
+
+add_executable(checkLayout checkLayout.cu)
 set_target_properties(vectorSummation PROPERTIES CUDA_SEPARABLE_COMPILATION ON)  # CUDA 분리 컴파일 활성화
 
 target_link_libraries(vectorSummation 
