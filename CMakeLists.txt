@@ -17,25 +17,33 @@ include_directories(
     ${CUDA_INCLUDE_DIRS}  # CUDA include 디렉토리 추가
     ${PROJECT_SOURCE_DIR}
     ${PROJECT_SOURCE_DIR}/DS_Timer  # DS_Timer 디렉토리 추가
+    ${PROJECT_SOURCE_DIR}/LargeMatrixCalculation  # DS_Timer 디렉토리 추가
 )
 
 link_directories(
     ${CUDA_LIBRARY_DIRS}  # CUDA 라이브러리 디렉토리 추가
 )
 
-# demo 실행 파일 (CUDA 파일 컴파일)
+#vectorSummation Code
 add_executable(vectorSummation vectorSummation.cu DS_Timer/DS_timer.cpp)
 set_target_properties(vectorSummation PROPERTIES CUDA_SEPARABLE_COMPILATION ON)  # CUDA 분리 컴파일 활성화
 
 target_link_libraries(vectorSummation 
     ${CUDA_LIBRARIES} 
-    cudart 
 )
 
+#checkLayout Code
 add_executable(checkLayout checkLayout.cu)
-set_target_properties(vectorSummation PROPERTIES CUDA_SEPARABLE_COMPILATION ON)  # CUDA 분리 컴파일 활성화
+set_target_properties(checkLayout PROPERTIES CUDA_SEPARABLE_COMPILATION ON)  # CUDA 분리 컴파일 활성화
 
-target_link_libraries(vectorSummation 
+target_link_libraries(checkLayout 
     ${CUDA_LIBRARIES} 
-    cudart 
+)
+
+#Large Mat Add Code
+add_executable(largeMatAdd LargeMatrixCalculation/matadd.cpp LargeMatrixCalculation/matadd.cu LargeMatrixCalculation/matadd.cuh DS_Timer/DS_timer.cpp)
+set_target_properties(largeMatAdd PROPERTIES CUDA_SEPARABLE_COMPILATION ON)  # CUDA 분리 컴파일 활성화
+
+target_link_libraries(largeMatAdd 
+    ${CUDA_LIBRARIES} 
 )
