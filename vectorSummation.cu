@@ -18,12 +18,13 @@ __global__ void vectorAdd(int *da, int *db, int *dc, int numElements)
 
 int main()
 {
-    // DS_timer timer;
-    // timer.setTimerName(0, (char *)"CUDA Total");
-    // timer.setTimerName(1, (char *)"Computation(Kernel)");
-    // timer.setTimerName(2, (char *)"Data Trans. : Host -> Device");
-    // timer.setTimerName(3, (char *)"Data Trans. : Device -> Host");
-    // timer.setTimerName(4, (char *)"VecAdd on Host");
+    DS_timer timer(5);
+    timer.setTimerName(0, (char *)"CUDA Total");
+    timer.setTimerName(1, (char *)"Computation(Kernel)");
+    timer.setTimerName(2, (char *)"Data Trans. : Host -> Device");
+    timer.setTimerName(3, (char *)"Data Trans. : Device -> Host");
+    timer.setTimerName(4, (char *)"VecAdd on Host");
+    timer.initTimers();
     int *a, *b, *c, *hc;
     int *da, *db, *dc;
     int memSize = NUM_DATA * sizeof(int);
@@ -45,40 +46,40 @@ int main()
         b[i] = rand() % 10;
     }
 
-    // timer.onTimer(4);
+    timer.onTimer(4);
     for (int i = 0; i < NUM_DATA; i++)
     {
         hc[i] = a[i] + b[i];
     }
-    // timer.offTimer(4);
+    timer.offTimer(4);
 
     cudaMalloc(&da, memSize);
     cudaMalloc(&db, memSize);
     cudaMalloc(&dc, memSize);
 
-    // timer.onTimer(0);
+    timer.onTimer(0);
 
-    // timer.onTimer(2);
+    timer.onTimer(2);
     cudaMemcpy(da, a, memSize, cudaMemcpyHostToDevice);
     cudaMemcpy(db, b, memSize, cudaMemcpyHostToDevice);
-    // timer.offTimer(2);
+    timer.offTimer(2);
 
-    // timer.onTimer(1);
+    timer.onTimer(1);
     vectorAdd<<<1, NUM_DATA>>>(da, db, dc, NUM_DATA);
     cudaDeviceSynchronize();
-    // timer.offTimer(1);
+    timer.offTimer(1);
 
-    // timer.onTimer(3);
+    timer.onTimer(3);
     cudaMemcpy(c, dc, memSize, cudaMemcpyDeviceToHost);
-    // timer.offTimer(3);
+    timer.offTimer(3);
 
-    // timer.offTimer(0);
+    timer.offTimer(0);
 
     cudaFree(da);
     cudaFree(db);
     cudaFree(dc);
 
-    // timer.printTimer();
+    timer.printTimer();
 
     bool result = true;
     for (int i = 0; i < NUM_DATA; i++)
