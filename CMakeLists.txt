@@ -4,6 +4,8 @@ project(vectorSummation CUDA CXX)  # CUDA 언어 지원 추가
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_BUILD_TYPE Release)
+# CUDA 아키텍처 설정 (예: 7.5, 8.0 등)
+set(CMAKE_CUDA_ARCHITECTURES 87)
 
 # CUDA 설정
 set(CMAKE_CUDA_STANDARD 17)
